@@ -3,8 +3,8 @@ require_relative 'lib/edge_detection/version'
 Gem::Specification.new do |spec|
   spec.name          = "edge_detection"
   spec.version       = EdgeDetection::VERSION
-  spec.authors       = ["Olaf Van Huusen"]
-  spec.email         = ["olaf@example.com"]
+  spec.authors       = ["Lennard Clicqué"]
+  spec.email         = ["lennard@example.com"]
 
   spec.summary       = "A Ruby gem for easy edge detection in images"
   spec.description   = "Provides easy-to-use edge extraction from images with support for Canny and Sobel edge detection algorithms. Works with MiniMagick::Image and RMagick objects."

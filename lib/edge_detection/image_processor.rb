@@ -1,6 +1,12 @@
 module EdgeDetection
   # Wrapper class to handle both MiniMagick::Image and Magick::Image objects
   class ImageProcessor
+    # Default parameter values for edge detection algorithms
+    MINIMAGICK_CANNY_LOWER_THRESHOLD = 10
+    MINIMAGICK_CANNY_UPPER_THRESHOLD = 30
+    RMAGICK_CANNY_LOWER_THRESHOLD = 0.1
+    RMAGICK_CANNY_UPPER_THRESHOLD = 0.3
+
     attr_reader :image, :image_type
 
     def initialize(image)
@@ -45,8 +51,8 @@ module EdgeDetection
         # MiniMagick canny edge detection
         radius = options[:radius] || 0
         sigma = options[:sigma] || 1
-        lower_threshold = options[:lower_threshold] || 10
-        upper_threshold = options[:upper_threshold] || 30
+        lower_threshold = options[:lower_threshold] || MINIMAGICK_CANNY_LOWER_THRESHOLD
+        upper_threshold = options[:upper_threshold] || MINIMAGICK_CANNY_UPPER_THRESHOLD
 
         @image.combine_options do |c|
           c.colorspace "Gray"
@@ -73,8 +79,8 @@ module EdgeDetection
         # RMagick canny edge detection
         radius = options[:radius] || 0
         sigma = options[:sigma] || 1
-        lower_threshold = options[:lower_threshold] || 0.1
-        upper_threshold = options[:upper_threshold] || 0.3
+        lower_threshold = options[:lower_threshold] || RMAGICK_CANNY_LOWER_THRESHOLD
+        upper_threshold = options[:upper_threshold] || RMAGICK_CANNY_UPPER_THRESHOLD
 
         result = @image.quantize(256, Magick::GRAYColorspace)
         result = result.canny_edge_channel(radius, sigma, lower_threshold, upper_threshold)
