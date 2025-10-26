@@ -29,7 +29,11 @@ jobs:
       - name: Install dependencies
         run: |
           if [ -f "Gemfile" ]; then
-            gem install bundler
+            if ruby -e "exit RUBY_VERSION < '3.1'"; then
+              gem install bundler -v '~>2.3'
+            else
+              gem install bundler -v '2.6.3'
+            fi
             bundle install --jobs 4 --retry 3
           else
             echo "No Gemfile found - skipping dependency installation"
