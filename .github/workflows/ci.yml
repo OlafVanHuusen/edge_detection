@@ -37,8 +37,8 @@ jobs:
 
       - name: Run tests
         run: |
-          if [ -f "Rakefile" ]; then
+          if [ -f "Gemfile" ] && [ -f "Rakefile" ]; then
             bundle exec rake test || bundle exec rake spec || echo "No tests configured yet"
           else
-            echo "No Rakefile found - tests not yet configured"
+            echo "No Gemfile or Rakefile found - tests not yet configured"
           fi
