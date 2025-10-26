@@ -6,7 +6,7 @@ Gem::Specification.new do |spec|
   spec.version       = '0.1.0'
   spec.summary       = 'Edge detection utilities'
   spec.description   = 'Small library for edge detection helpers'
-  spec.authors       = ["Lennard Clicque"]
+  spec.authors       = ['Lennard Clicque']
   spec.email         = ['l.clicque@gmail.com']
 
   spec.files         = ['lib/edge_detection.rb']
