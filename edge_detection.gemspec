@@ -14,5 +14,6 @@ Gem::Specification.new do |spec|
   spec.license       = 'MIT'
 
   # Ensure RuboCop and other tools can determine a target Ruby version
-  spec.required_ruby_version = Gem::Requirement.new('>= 2.6')
+  spec.required_ruby_version = Gem::Requirement.new('>= 2.7')
+  spec.metadata['rubygems_mfa_required'] = 'true'
 end
