@@ -23,7 +23,7 @@ bundle install
 This project uses RuboCop for code quality and style checking:
 
 ```bash
-# Install RuboCop
+# Install RuboCop (until a Gemfile is added)
 gem install rubocop
 
 # Run linting
@@ -32,6 +32,8 @@ rubocop
 # Auto-fix issues where possible
 rubocop -a
 ```
+
+*Note: Once the gem structure is fully set up, RuboCop will be managed via Bundler.*
 
 ### Running Tests
 
