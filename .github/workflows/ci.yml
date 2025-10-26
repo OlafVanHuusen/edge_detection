@@ -24,17 +24,21 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby-version }}
-          bundler-cache: true
+          bundler-cache: false
 
       - name: Install dependencies
         run: |
-          gem install bundler
-          bundle install --jobs 4 --retry 3 || echo "No Gemfile yet"
+          if [ -f "Gemfile" ]; then
+            gem install bundler
+            bundle install --jobs 4 --retry 3
+          else
+            echo "No Gemfile found - skipping dependency installation"
+          fi
 
       - name: Run tests
         run: |
-          if [ -f "Rakefile" ]; then
+          if [ -f "Gemfile" ] && [ -f "Rakefile" ]; then
             bundle exec rake test || bundle exec rake spec || echo "No tests configured yet"
           else
-            echo "No Rakefile found - tests not yet configured"
+            echo "No Gemfile or Rakefile found - tests not yet configured"
           fi
