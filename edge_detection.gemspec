@@ -9,11 +9,14 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Lennard Clicque']
   spec.email         = ['l.clicque@gmail.com']
 
-  spec.files         = ['lib/edge_detection.rb']
+  spec.files         = Dir['lib/**/*.rb']
   spec.homepage      = 'https://example.com/edge_detection'
   spec.license       = 'MIT'
 
   # Ensure RuboCop and other tools can determine a target Ruby version
   spec.required_ruby_version = Gem::Requirement.new('>= 2.7')
   spec.metadata['rubygems_mfa_required'] = 'true'
+
+  # Image processing dependencies
+  spec.add_dependency 'mini_magick', '~> 4.11'
 end

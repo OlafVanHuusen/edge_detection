@@ -7,3 +7,4 @@ gemspec
 
 # Development dependencies
 gem 'rubocop', '~> 1.50', require: false
+gem 'mini_magick', '~> 4.11'
