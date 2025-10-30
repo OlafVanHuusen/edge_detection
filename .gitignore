@@ -66,3 +66,6 @@ build-iPhoneSimulator/
 /.idea/modules.xml
 /.idea/vcs.xml
 /.idea/copilot.data.migration.ask2agent.xml
+/.rspec_status
+/.idea/copilotDiffState.xml
+/Gemfile.lock
