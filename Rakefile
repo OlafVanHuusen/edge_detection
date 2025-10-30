@@ -8,4 +8,10 @@ RSpec::Core::RakeTask.new(:spec)
 
 RuboCop::RakeTask.new
 
+# RuboCop task for CI - only autocorrectable offenses
+RuboCop::RakeTask.new('rubocop:autocorrect_only') do |task|
+  task.options = ['--display-only-correctable']
+end
+
 task default: %i[spec rubocop]
+task ci: %i[spec rubocop:autocorrect_only]

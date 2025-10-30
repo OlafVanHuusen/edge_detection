@@ -27,18 +27,7 @@ jobs:
           bundler-cache: false
 
       - name: Install dependencies
-        run: |
-          if [ -f "Gemfile" ]; then
-            gem install bundler
-            bundle install --jobs 4 --retry 3
-          else
-            echo "No Gemfile found - skipping dependency installation"
-          fi
+        run: bundle install --jobs 4
 
       - name: Run tests
-        run: |
-          if [ -f "Gemfile" ] && [ -f "Rakefile" ]; then
-            bundle exec rake test || bundle exec rake spec || echo "No tests configured yet"
-          else
-            echo "No Gemfile or Rakefile found - tests not yet configured"
-          fi
+        run: bundle exec rake spec
