@@ -6,5 +6,14 @@ source 'https://rubygems.org'
 gemspec
 
 # Development dependencies
-gem 'rubocop', '~> 1.50', require: false
 gem 'mini_magick', '~> 4.11'
+gem 'rubocop', '~> 1.50', require: false
+
+group :development, :test do
+  gem 'rspec', '~> 3.12'
+end
+
+group :test do
+  gem 'simplecov', '~> 0.22', require: false
+end
+

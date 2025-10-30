@@ -1,0 +1,10 @@
+# RSpec test status
+.rspec_status
+
+# Code coverage reports
+coverage/
+
+# Test fixtures (optional - uncomment if you want to ignore generated test images)
+# spec/fixtures/*.png
+# spec/fixtures/*.jpg
+
