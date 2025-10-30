@@ -7,7 +7,9 @@ gemspec
 
 # Development dependencies
 gem 'mini_magick', '~> 4.11'
+gem 'rake', '~> 12.3.3'
 gem 'rubocop', '~> 1.50', require: false
+
 
 group :development, :test do
   gem 'rspec', '~> 3.12'
@@ -16,4 +18,3 @@ end
 group :test do
   gem 'simplecov', '~> 0.22', require: false
 end
-

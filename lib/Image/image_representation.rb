@@ -44,6 +44,7 @@ class ImageRepresentation
           nx = x + dx
           # Bounds check
           next unless ny >= 0 && ny < @height && nx >= 0 && nx < @width
+
           # Direct comparison without array allocation
           pixel_value = @pixels[ny][nx][0]
           max_value = pixel_value if pixel_value > max_value
@@ -67,7 +68,4 @@ class ImageRepresentation
       end
     end
   end
-
-
 end
-
