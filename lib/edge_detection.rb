@@ -4,4 +4,45 @@ require_relative 'Image/image_representation'
 require 'mini_magick'
 
 module EdgeDetection
+
+  def dilation_erosion_edge_detection(input_image_path, output_image_path, structuring_element = nil, repeats = 0)
+    structuring_element ||= get_default_structuring_element_3x3
+    image_rep = create_image_representation(input_image_path)
+    edge_image_rep = dilation_erosion_substraction(image_rep, structuring_element, repeats)
+    store_image(edge_image_rep, output_image_path)
+  end
+
+  private
+
+  def store_image(image_rep, output_path)
+    result_image = MiniMagick::Image.create('png') do |f|
+      f.write(image_rep.pixels.flatten.pack('C*'))
+    end
+    result_image.write(output_path)
+  end
+
+  def dilation_erosion_substraction(image_rep, structuring_element, repeats = 0)
+    dilated_image = image_rep.dilation(structuring_element)
+    eroded_image = image_rep.erosion(structuring_element)
+
+    repeats.times do
+      dilated_image = dilated_image.dilation(structuring_element)
+      eroded_image = eroded_image.erosion(structuring_element)
+    end
+    dilated_image.subtract(eroded_image)
+  end
+
+  def create_image_representation(image_path)
+    image_rep = ImageRepresentation.new
+    image_rep.load_image(image_path)
+    image_rep
+  end
+
+  def get_default_structuring_element_3x3
+    [
+      [1, 1, 1],
+      [1, 1, 1],
+      [1, 1, 1]
+    ]
+  end
 end
