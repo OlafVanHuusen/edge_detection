@@ -22,75 +22,11 @@ class ImageRepresentation
   end
 
   def dilation(structuring_element)
-    se_height = structuring_element.length
-    se_width = structuring_element[0].length
-    pad_y = se_height / 2
-    pad_x = se_width / 2
-    # Pre-compute active positions in structuring element
-    active_positions = []
-    se_height.times do |j|
-      se_width.times do |i|
-        active_positions << [j - pad_y, i - pad_x] if structuring_element[j][i] == 1
-      end
-    end
-    # Pre-allocate output array
-    dilated_pixels = Array.new(@height) { Array.new(@width) }
-    # Process each pixel
-    @height.times do |y|
-      @width.times do |x|
-        max_value = 0
-        # Only iterate over active structuring element positions
-        active_positions.each do |dy, dx|
-          ny = y + dy
-          nx = x + dx
-          # Bounds check
-          next unless ny >= 0 && ny < @height && nx >= 0 && nx < @width
-
-          # Direct comparison without array allocation
-          pixel_value = @pixels[ny][nx][0]
-          max_value = pixel_value if pixel_value > max_value
-        end
-        dilated_pixels[y][x] = [max_value]
-      end
-    end
-    @pixels = dilated_pixels
-    self
+    morphological_operation(structuring_element, 0) { |current, pixel| [current, pixel].max }
   end
 
   def erosion(structuring_element)
-    se_height = structuring_element.length
-    se_width = structuring_element[0].length
-    pad_y = se_height / 2
-    pad_x = se_width / 2
-    # Pre-compute active positions in structuring element
-    active_positions = []
-    se_height.times do |j|
-      se_width.times do |i|
-        active_positions << [j - pad_y, i - pad_x] if structuring_element[j][i] == 1
-      end
-    end
-    # Pre-allocate output array
-    eroded_pixels = Array.new(@height) { Array.new(@width) }
-    # Process each pixel
-    @height.times do |y|
-      @width.times do |x|
-        min_value = 255
-        # Only iterate over active structuring element positions
-        active_positions.each do |dy, dx|
-          ny = y + dy
-          nx = x + dx
-          # Bounds check
-          next unless ny >= 0 && ny < @height && nx >= 0 && nx < @width
-
-          # Direct comparison without array allocation
-          pixel_value = @pixels[ny][nx][0]
-          min_value = pixel_value if pixel_value < min_value
-        end
-        eroded_pixels[y][x] = [min_value]
-      end
-    end
-    @pixels = eroded_pixels
-    self
+    morphological_operation(structuring_element, 255) { |current, pixel| [current, pixel].min }
   end
 
   def copy
@@ -98,11 +34,71 @@ class ImageRepresentation
     ImageRepresentation.new(nil, copied_pixels)
   end
 
+  def subtract(other_image)
+    result_pixels = Array.new(@height) { Array.new(@width) }
+    @height.times do |y|
+      @width.times do |x|
+        value = @pixels[y][x][0] - other_image.pixels[y][x][0]
+        value = 0 if value.negative?
+        result_pixels[y][x] = [value]
+      end
+    end
+    ImageRepresentation.new(nil, result_pixels)
+  end
+
   private
+
+  def morphological_operation(structuring_element, initial_value)
+    se_height = structuring_element.length
+    se_width = structuring_element[0].length
+    pad_y = se_height / 2
+    pad_x = se_width / 2
+    # Pre-compute active positions in structuring element
+    active_positions = []
+    se_height.times do |j|
+      se_width.times do |i|
+        active_positions << [j - pad_y, i - pad_x] if structuring_element[j][i] == 1
+      end
+    end
+    # Pre-allocate output array
+    output_pixels = Array.new(@height) { Array.new(@width) }
+    # Process each pixel
+    @height.times do |y|
+      @width.times do |x|
+        result_value = initial_value
+        # Only iterate over active structuring element positions
+        active_positions.each do |dy, dx|
+          ny = y + dy
+          nx = x + dx
+          # Bounds check
+          next unless ny >= 0 && ny < @height && nx >= 0 && nx < @width
+
+          # Direct comparison without array allocation
+          pixel_value = @pixels[ny][nx][0]
+          result_value = yield(result_value, pixel_value)
+        end
+        output_pixels[y][x] = [result_value]
+      end
+    end
+    @pixels = output_pixels
+    self
+  end
+
+  def is_grayscale?
+    return false if @pixels.empty? || height.nil? || width.nil?
+
+    (0...@height).each do |y|
+      (0...@width).each do |x|
+        return false if @pixels[x][y].length != 1
+      end
+    end
+    true
+  end
 
   def to_grayscale
     # Convert image to grayscale and return pixel data
     return if @pixels.empty? || height.nil? || width.nil?
+    return if is_grayscale?
 
     (0...@height).each do |y|
       (0...@width).each do |x|

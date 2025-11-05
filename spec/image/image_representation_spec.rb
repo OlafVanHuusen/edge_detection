@@ -184,4 +184,68 @@ RSpec.describe ImageRepresentation do
       end
     end
   end
+
+  describe '#subtract' do
+    let(:image1) { described_class.new }
+    let(:image2) { described_class.new }
+
+    before do
+      # Create two simple 3x3 test images
+      pixels1 = [
+        [[200], [150], [100]],
+        [[180], [120], [80]],
+        [[160], [100], [60]]
+      ]
+
+      pixels2 = [
+        [[50], [50], [50]],
+        [[80], [20], [30]],
+        [[60], [50], [40]]
+      ]
+
+      image1.instance_variable_set(:@width, 3)
+      image1.instance_variable_set(:@height, 3)
+      image1.instance_variable_set(:@pixels, pixels1)
+
+      image2.instance_variable_set(:@width, 3)
+      image2.instance_variable_set(:@height, 3)
+      image2.instance_variable_set(:@pixels, pixels2)
+    end
+
+    it 'subtracts one image from another correctly' do
+      result = image1.subtract(image2)
+
+      # Check that result is a new ImageRepresentation
+      expect(result).to be_a(ImageRepresentation)
+      expect(result).not_to eq(image1)
+
+      # Check specific pixel values (200-50=150, 150-50=100, etc.)
+      expect(result.pixels[0][0][0]).to eq(150)
+      expect(result.pixels[0][1][0]).to eq(100)
+      expect(result.pixels[0][2][0]).to eq(50)
+      expect(result.pixels[1][0][0]).to eq(100)
+      expect(result.pixels[1][1][0]).to eq(100)
+    end
+
+    it 'clamps negative values to zero' do
+      # Create case where subtraction would result in negative value
+      pixels1 = [[[50], [30], [10]]]
+      pixels2 = [[[100], [50], [20]]]
+
+      image1.instance_variable_set(:@width, 3)
+      image1.instance_variable_set(:@height, 1)
+      image1.instance_variable_set(:@pixels, pixels1)
+
+      image2.instance_variable_set(:@width, 3)
+      image2.instance_variable_set(:@height, 1)
+      image2.instance_variable_set(:@pixels, pixels2)
+
+      result = image1.subtract(image2)
+
+      # Negative results should be clamped to 0
+      expect(result.pixels[0][0][0]).to eq(0)  # 50-100 = -50 -> 0
+      expect(result.pixels[0][1][0]).to eq(0)  # 30-50 = -20 -> 0
+      expect(result.pixels[0][2][0]).to eq(0)  # 10-20 = -10 -> 0
+    end
+  end
 end
