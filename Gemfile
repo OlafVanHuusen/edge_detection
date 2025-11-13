@@ -6,7 +6,7 @@ source 'https://rubygems.org'
 gemspec
 
 # Development dependencies
-gem 'mini_magick', '~> 4.11'
+gem 'mini_magick', '~> 5.3'
 gem 'rake', '~> 12.3.3'
 gem 'rubocop', '~> 1.50', require: false
 
