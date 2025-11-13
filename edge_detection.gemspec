@@ -18,7 +18,7 @@ Gem::Specification.new do |spec|
   spec.metadata['rubygems_mfa_required'] = 'true'
 
   # Image processing dependencies
-  spec.add_dependency 'mini_magick', '~> 4.11'
+  spec.add_dependency 'mini_magick', '>= 4.11', '< 6.0'
 
   # Post-install message
   spec.post_install_message = <<~MESSAGE
