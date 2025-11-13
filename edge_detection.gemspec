@@ -19,4 +19,15 @@ Gem::Specification.new do |spec|
 
   # Image processing dependencies
   spec.add_dependency 'mini_magick', '~> 4.11'
+
+  # Post-install message
+  spec.post_install_message = <<~MESSAGE
+    ╔═══════════════════════════════════════════════════════════════════════╗
+    ║  edge_detection requires ImageMagick to be installed on your system  ║
+    ║                                                                       ║
+    ║  Ubuntu/Debian: sudo apt-get install imagemagick libmagickwand-dev   ║
+    ║  macOS: brew install imagemagick                                     ║
+    ║  Windows: https://imagemagick.org/script/download.php#windows        ║
+    ╚═══════════════════════════════════════════════════════════════════════╝
+  MESSAGE
 end

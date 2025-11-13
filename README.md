@@ -11,9 +11,27 @@ A Ruby gem for easy edge detection in images.
 
 - Ruby 2.7 or higher
 - Bundler
+- ImageMagick (system dependency)
 
 ### Setup
 
+Install ImageMagick first:
+
+**On Ubuntu/Debian:**
+```bash
+sudo apt-get update
+sudo apt-get install -y imagemagick libmagickwand-dev
+```
+
+**On macOS:**
+```bash
+brew install imagemagick
+```
+
+**On Windows:**
+Download and install from [ImageMagick website](https://imagemagick.org/script/download.php#windows)
+
+Then install Ruby dependencies:
 ```bash
 bundle install
 ```
