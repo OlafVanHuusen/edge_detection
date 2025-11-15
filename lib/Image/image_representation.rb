@@ -9,8 +9,8 @@ class ImageRepresentation
   def initialize(image = nil, pixels = [])
     @image = image
     @pixels = pixels
-    @width = pixels.length
-    @height = pixels.any? ? pixels[0].length : 0
+    @height = pixels.length
+    @width = pixels.any? ? pixels[0].length : 0
     to_grayscale
   end
 
@@ -32,6 +32,19 @@ class ImageRepresentation
   def copy
     copied_pixels = @pixels.map { |row| row.map(&:dup) }
     ImageRepresentation.new(nil, copied_pixels)
+  end
+
+  def ==(other)
+    return false unless other.is_a?(ImageRepresentation)
+    return false if @width != other.width || @height != other.height
+
+    @pixels == other.pixels
+  end
+
+  alias eql? ==
+
+  def hash
+    [@pixels, @width, @height].hash
   end
 
   def subtract(other_image)
@@ -81,7 +94,7 @@ class ImageRepresentation
       end
     end
     @pixels = output_pixels
-    self
+    copy
   end
 
   def is_grayscale?
@@ -89,7 +102,7 @@ class ImageRepresentation
 
     (0...@height).each do |y|
       (0...@width).each do |x|
-        return false if @pixels[x][y].length != 1
+        return false if @pixels[y][x].length != 1
       end
     end
     true
