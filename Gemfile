@@ -7,6 +7,7 @@ gemspec
 
 # Development dependencies
 gem 'mini_magick', '~> 4.11'
+gem 'numo-narray', '~> 0.9'
 gem 'rake', '~> 12.3.3'
 gem 'rubocop', '~> 1.50', require: false
 
