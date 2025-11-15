@@ -51,9 +51,7 @@ RSpec.describe ImageRepresentation do
         end
       end
 
-      image.instance_variable_set(:@width, size)
-      image.instance_variable_set(:@height, size)
-      image.instance_variable_set(:@pixels, test_pixels)
+      image.pixels = test_pixels
       image
     end
 
@@ -67,9 +65,10 @@ RSpec.describe ImageRepresentation do
 
         execution_time = end_time - start_time
 
-        expect(result).to eq(test_image)
-        expect(test_image.width).to eq(100)
-        expect(test_image.height).to eq(100)
+        expect(result).to be_a(ImageRepresentation)
+        expect(result).not_to equal(test_image)
+        expect(result.width).to eq(100)
+        expect(result.height).to eq(100)
 
         puts "\n  Dilation on 100x100 image took: #{(execution_time * 1000).round(2)} ms"
       end
@@ -81,7 +80,8 @@ RSpec.describe ImageRepresentation do
 
         execution_time = end_time - start_time
 
-        expect(result).to eq(test_image)
+        expect(result).to be_a(ImageRepresentation)
+        expect(result).not_to equal(test_image)
         puts "\n  Erosion on 100x100 image took: #{(execution_time * 1000).round(2)} ms"
       end
 
@@ -117,9 +117,10 @@ RSpec.describe ImageRepresentation do
 
         execution_time = end_time - start_time
 
-        expect(result).to eq(large_image)
-        expect(large_image.width).to eq(400)
-        expect(large_image.height).to eq(400)
+        expect(result).to be_a(ImageRepresentation)
+        expect(result).not_to equal(large_image)
+        expect(result.width).to eq(400)
+        expect(result.height).to eq(400)
 
         puts "\n  Dilation on 400x400 image took: #{(execution_time * 1000).round(2)} ms"
 
@@ -135,9 +136,10 @@ RSpec.describe ImageRepresentation do
 
         execution_time = end_time - start_time
 
-        expect(result).to eq(large_image)
-        expect(large_image.width).to eq(400)
-        expect(large_image.height).to eq(400)
+        expect(result).to be_a(ImageRepresentation)
+        expect(result).not_to equal(large_image)
+        expect(result.width).to eq(400)
+        expect(result.height).to eq(400)
 
         puts "\n  Erosion on 400x400 image took: #{(execution_time * 1000).round(2)} ms"
       end
@@ -162,9 +164,7 @@ RSpec.describe ImageRepresentation do
         # Clone the image for the second operation
         large_image_copy = described_class.new
         pixels_copy = Marshal.load(Marshal.dump(large_image.pixels))
-        large_image_copy.instance_variable_set(:@width, 400)
-        large_image_copy.instance_variable_set(:@height, 400)
-        large_image_copy.instance_variable_set(:@pixels, pixels_copy)
+        large_image_copy.pixels = pixels_copy
 
         start_time = Time.now
 
@@ -203,9 +203,10 @@ RSpec.describe ImageRepresentation do
 
         execution_time = end_time - start_time
 
-        expect(result).to eq(xlarge_image)
-        expect(xlarge_image.width).to eq(1000)
-        expect(xlarge_image.height).to eq(1000)
+        expect(result).to be_a(ImageRepresentation)
+        expect(result).not_to equal(xlarge_image)
+        expect(result.width).to eq(1000)
+        expect(result.height).to eq(1000)
 
         puts "\n  Dilation on 1000x1000 image took: #{(execution_time * 1000).round(2)} ms"
 
@@ -221,9 +222,10 @@ RSpec.describe ImageRepresentation do
 
         execution_time = end_time - start_time
 
-        expect(result).to eq(xlarge_image)
-        expect(xlarge_image.width).to eq(1000)
-        expect(xlarge_image.height).to eq(1000)
+        expect(result).to be_a(ImageRepresentation)
+        expect(result).not_to equal(xlarge_image)
+        expect(result.width).to eq(1000)
+        expect(result.height).to eq(1000)
 
         puts "\n  Erosion on 1000x1000 image took: #{(execution_time * 1000).round(2)} ms"
       end
@@ -248,9 +250,7 @@ RSpec.describe ImageRepresentation do
         # Clone the image for the second operation
         xlarge_image_copy = described_class.new
         pixels_copy = Marshal.load(Marshal.dump(xlarge_image.pixels))
-        xlarge_image_copy.instance_variable_set(:@width, 1000)
-        xlarge_image_copy.instance_variable_set(:@height, 1000)
-        xlarge_image_copy.instance_variable_set(:@pixels, pixels_copy)
+        xlarge_image_copy.pixels = pixels_copy
 
         start_time = Time.now
 

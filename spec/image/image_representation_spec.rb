@@ -21,9 +21,7 @@ RSpec.describe ImageRepresentation do
       test_pixels = Array.new(5) { Array.new(5) { [0] } }
       test_pixels[2][2] = [255] # Center pixel is bright
 
-      image_rep.instance_variable_set(:@width, 5)
-      image_rep.instance_variable_set(:@height, 5)
-      image_rep.instance_variable_set(:@pixels, test_pixels)
+      image_rep.pixels = test_pixels
     end
 
     context 'with a 3x3 square structuring element' do
@@ -39,25 +37,33 @@ RSpec.describe ImageRepresentation do
         result = image_rep.dilation(structuring_element)
 
         # The dilation should spread the bright pixel to its neighbors
-        expect(result).to eq(image_rep) # Returns self for chaining
+        expect(result).to be_a(ImageRepresentation)
+        expect(result).not_to eq(image_rep) # Returns a new object
 
-        # Check that the center and surrounding pixels are now bright
-        expect(image_rep.pixels[1][1][0]).to eq(255)
-        expect(image_rep.pixels[1][2][0]).to eq(255)
-        expect(image_rep.pixels[2][1][0]).to eq(255)
-        expect(image_rep.pixels[2][2][0]).to eq(255)
+        # Check that the center and surrounding pixels are now bright in the result
+        expect(result.pixels[1][1][0]).to eq(255)
+        expect(result.pixels[1][2][0]).to eq(255)
+        expect(result.pixels[2][1][0]).to eq(255)
+        expect(result.pixels[2][2][0]).to eq(255)
 
         # Corner pixels should still be dark
-        expect(image_rep.pixels[0][0][0]).to eq(0)
-        expect(image_rep.pixels[4][4][0]).to eq(0)
+        expect(result.pixels[0][0][0]).to eq(0)
+        expect(result.pixels[4][4][0]).to eq(0)
       end
 
-      it 'updates the pixels array' do
-        original_pixels = image_rep.pixels
-        image_rep.dilation(structuring_element)
+      it 'returns a new image representation' do
+        original_pixels = image_rep.pixels.dup
+        result = image_rep.dilation(structuring_element)
 
-        # Should have updated the pixels
-        expect(image_rep.pixels).not_to equal(original_pixels)
+        # Should return a new object
+        expect(result).to be_a(ImageRepresentation)
+        expect(result).not_to equal(image_rep)
+
+        # Original should be unchanged
+        expect(image_rep.pixels).to eq(original_pixels)
+
+        # Result should be different
+        expect(result.pixels).not_to eq(original_pixels)
       end
     end
 
@@ -71,18 +77,18 @@ RSpec.describe ImageRepresentation do
       end
 
       it 'dilates only in cross pattern' do
-        image_rep.dilation(structuring_element)
+        result = image_rep.dilation(structuring_element)
 
-        # Check that only cross pattern is dilated
-        expect(image_rep.pixels[2][1][0]).to eq(255)  # Left
-        expect(image_rep.pixels[2][3][0]).to eq(255)  # Right
-        expect(image_rep.pixels[1][2][0]).to eq(255)  # Top
-        expect(image_rep.pixels[3][2][0]).to eq(255)  # Bottom
-        expect(image_rep.pixels[2][2][0]).to eq(255)  # Center
+        # Check that only cross pattern is dilated in the result
+        expect(result.pixels[2][1][0]).to eq(255)  # Left
+        expect(result.pixels[2][3][0]).to eq(255)  # Right
+        expect(result.pixels[1][2][0]).to eq(255)  # Top
+        expect(result.pixels[3][2][0]).to eq(255)  # Bottom
+        expect(result.pixels[2][2][0]).to eq(255)  # Center
 
         # Diagonal pixels should remain dark
-        expect(image_rep.pixels[1][1][0]).to eq(0)
-        expect(image_rep.pixels[1][3][0]).to eq(0)
+        expect(result.pixels[1][1][0]).to eq(0)
+        expect(result.pixels[1][3][0]).to eq(0)
       end
     end
 
@@ -91,7 +97,7 @@ RSpec.describe ImageRepresentation do
         # Place bright pixel at corner
         test_pixels = Array.new(5) { Array.new(5) { [0] } }
         test_pixels[0][0] = [255]
-        image_rep.instance_variable_set(:@pixels, test_pixels)
+        image_rep.pixels = test_pixels
 
         structuring_element = [[1, 1], [1, 1]]
 
@@ -106,9 +112,7 @@ RSpec.describe ImageRepresentation do
       test_pixels = Array.new(5) { Array.new(5) { [255] } }
       test_pixels[2][2] = [0] # Center pixel is dark
 
-      image_rep.instance_variable_set(:@width, 5)
-      image_rep.instance_variable_set(:@height, 5)
-      image_rep.instance_variable_set(:@pixels, test_pixels)
+      image_rep.pixels = test_pixels
     end
 
     context 'with a 3x3 square structuring element' do
@@ -124,25 +128,33 @@ RSpec.describe ImageRepresentation do
         result = image_rep.erosion(structuring_element)
 
         # The erosion should spread the dark pixel to its neighbors
-        expect(result).to eq(image_rep) # Returns self for chaining
+        expect(result).to be_a(ImageRepresentation)
+        expect(result).not_to eq(image_rep) # Returns a new object
 
-        # Check that the center and surrounding pixels are now dark
-        expect(image_rep.pixels[1][1][0]).to eq(0)
-        expect(image_rep.pixels[1][2][0]).to eq(0)
-        expect(image_rep.pixels[2][1][0]).to eq(0)
-        expect(image_rep.pixels[2][2][0]).to eq(0)
+        # Check that the center and surrounding pixels are now dark in the result
+        expect(result.pixels[1][1][0]).to eq(0)
+        expect(result.pixels[1][2][0]).to eq(0)
+        expect(result.pixels[2][1][0]).to eq(0)
+        expect(result.pixels[2][2][0]).to eq(0)
 
         # Corner pixels should still be bright
-        expect(image_rep.pixels[0][0][0]).to eq(255)
-        expect(image_rep.pixels[4][4][0]).to eq(255)
+        expect(result.pixels[0][0][0]).to eq(255)
+        expect(result.pixels[4][4][0]).to eq(255)
       end
 
-      it 'updates the pixels array' do
-        original_pixels = image_rep.pixels
-        image_rep.erosion(structuring_element)
+      it 'returns a new image representation' do
+        original_pixels = image_rep.pixels.dup
+        result = image_rep.erosion(structuring_element)
 
-        # Should have updated the pixels
-        expect(image_rep.pixels).not_to equal(original_pixels)
+        # Should return a new object
+        expect(result).to be_a(ImageRepresentation)
+        expect(result).not_to equal(image_rep)
+
+        # Original should be unchanged
+        expect(image_rep.pixels).to eq(original_pixels)
+
+        # Result should be different
+        expect(result.pixels).not_to eq(original_pixels)
       end
     end
 
@@ -156,18 +168,18 @@ RSpec.describe ImageRepresentation do
       end
 
       it 'erodes only in cross pattern' do
-        image_rep.erosion(structuring_element)
+        result = image_rep.erosion(structuring_element)
 
-        # Check that only cross pattern is eroded
-        expect(image_rep.pixels[2][1][0]).to eq(0)  # Left
-        expect(image_rep.pixels[2][3][0]).to eq(0)  # Right
-        expect(image_rep.pixels[1][2][0]).to eq(0)  # Top
-        expect(image_rep.pixels[3][2][0]).to eq(0)  # Bottom
-        expect(image_rep.pixels[2][2][0]).to eq(0)  # Center
+        # Check that only cross pattern is eroded in the result
+        expect(result.pixels[2][1][0]).to eq(0)  # Left
+        expect(result.pixels[2][3][0]).to eq(0)  # Right
+        expect(result.pixels[1][2][0]).to eq(0)  # Top
+        expect(result.pixels[3][2][0]).to eq(0)  # Bottom
+        expect(result.pixels[2][2][0]).to eq(0)  # Center
 
         # Diagonal pixels should remain bright
-        expect(image_rep.pixels[1][1][0]).to eq(255)
-        expect(image_rep.pixels[1][3][0]).to eq(255)
+        expect(result.pixels[1][1][0]).to eq(255)
+        expect(result.pixels[1][3][0]).to eq(255)
       end
     end
 
@@ -176,7 +188,7 @@ RSpec.describe ImageRepresentation do
         # Place dark pixel at corner
         test_pixels = Array.new(5) { Array.new(5) { [255] } }
         test_pixels[0][0] = [0]
-        image_rep.instance_variable_set(:@pixels, test_pixels)
+        image_rep.pixels = test_pixels
 
         structuring_element = [[1, 1], [1, 1]]
 
@@ -203,13 +215,8 @@ RSpec.describe ImageRepresentation do
         [[60], [50], [40]]
       ]
 
-      image1.instance_variable_set(:@width, 3)
-      image1.instance_variable_set(:@height, 3)
-      image1.instance_variable_set(:@pixels, pixels1)
-
-      image2.instance_variable_set(:@width, 3)
-      image2.instance_variable_set(:@height, 3)
-      image2.instance_variable_set(:@pixels, pixels2)
+      image1.pixels = pixels1
+      image2.pixels = pixels2
     end
 
     it 'subtracts one image from another correctly' do
@@ -232,13 +239,8 @@ RSpec.describe ImageRepresentation do
       pixels1 = [[[50], [30], [10]]]
       pixels2 = [[[100], [50], [20]]]
 
-      image1.instance_variable_set(:@width, 3)
-      image1.instance_variable_set(:@height, 1)
-      image1.instance_variable_set(:@pixels, pixels1)
-
-      image2.instance_variable_set(:@width, 3)
-      image2.instance_variable_set(:@height, 1)
-      image2.instance_variable_set(:@pixels, pixels2)
+      image1.pixels = pixels1
+      image2.pixels = pixels2
 
       result = image1.subtract(image2)
 
@@ -246,6 +248,107 @@ RSpec.describe ImageRepresentation do
       expect(result.pixels[0][0][0]).to eq(0)  # 50-100 = -50 -> 0
       expect(result.pixels[0][1][0]).to eq(0)  # 30-50 = -20 -> 0
       expect(result.pixels[0][2][0]).to eq(0)  # 10-20 = -10 -> 0
+    end
+  end
+
+  describe 'array conversion methods' do
+    describe '#ruby_array_to_narray' do
+      it 'converts a grayscale Ruby array to NArray' do
+        ruby_array = [
+          [[100], [150], [200]],
+          [[50], [75], [125]],
+          [[25], [50], [75]]
+        ]
+
+        narray = image_rep.send(:ruby_array_to_narray, ruby_array)
+
+        expect(narray).to be_a(Numo::NArray)
+        expect(narray.shape).to eq([3, 3])
+        expect(narray[0, 0]).to eq(100)
+        expect(narray[1, 1]).to eq(75)
+        expect(narray[2, 2]).to eq(75)
+      end
+
+      it 'converts an RGB Ruby array to NArray' do
+        ruby_array = [
+          [[255, 0, 0], [0, 255, 0]],
+          [[0, 0, 255], [128, 128, 128]]
+        ]
+
+        narray = image_rep.send(:ruby_array_to_narray, ruby_array)
+
+        expect(narray).to be_a(Numo::NArray)
+        expect(narray.shape).to eq([2, 2, 3])
+        expect(narray[0, 0, 0]).to eq(255) # Red channel
+        expect(narray[0, 1, 1]).to eq(255) # Green channel
+        expect(narray[1, 0, 2]).to eq(255) # Blue channel
+      end
+
+      it 'returns nil for empty array' do
+        narray = image_rep.send(:ruby_array_to_narray, [])
+        expect(narray).to be_nil
+      end
+    end
+
+    describe '#narray_to_ruby_array' do
+      it 'converts a grayscale NArray to Ruby array' do
+        narray = Numo::UInt8[[100, 150], [50, 75]]
+
+        ruby_array = image_rep.send(:narray_to_ruby_array, narray)
+
+        expect(ruby_array).to be_a(Array)
+        expect(ruby_array.length).to eq(2)
+        expect(ruby_array[0][0]).to eq([100])
+        expect(ruby_array[0][1]).to eq([150])
+        expect(ruby_array[1][0]).to eq([50])
+        expect(ruby_array[1][1]).to eq([75])
+      end
+
+      it 'converts an RGB NArray to Ruby array' do
+        narray = Numo::UInt8.zeros(2, 2, 3)
+        narray[0, 0, 0] = 255 # Red
+        narray[0, 1, 1] = 255 # Green
+        narray[1, 0, 2] = 255 # Blue
+
+        ruby_array = image_rep.send(:narray_to_ruby_array, narray)
+
+        expect(ruby_array).to be_a(Array)
+        expect(ruby_array[0][0]).to eq([255, 0, 0])
+        expect(ruby_array[0][1]).to eq([0, 255, 0])
+        expect(ruby_array[1][0]).to eq([0, 0, 255])
+      end
+
+      it 'returns empty array for nil NArray' do
+        ruby_array = image_rep.send(:narray_to_ruby_array, nil)
+        expect(ruby_array).to eq([])
+      end
+    end
+
+    describe 'round-trip conversion' do
+      it 'maintains data integrity for grayscale images' do
+        original = [
+          [[10], [20], [30]],
+          [[40], [50], [60]],
+          [[70], [80], [90]]
+        ]
+
+        narray = image_rep.send(:ruby_array_to_narray, original)
+        converted_back = image_rep.send(:narray_to_ruby_array, narray)
+
+        expect(converted_back).to eq(original)
+      end
+
+      it 'maintains data integrity for RGB images' do
+        original = [
+          [[255, 0, 0], [0, 255, 0]],
+          [[0, 0, 255], [255, 255, 255]]
+        ]
+
+        narray = image_rep.send(:ruby_array_to_narray, original)
+        converted_back = image_rep.send(:narray_to_ruby_array, narray)
+
+        expect(converted_back).to eq(original)
+      end
     end
   end
 end

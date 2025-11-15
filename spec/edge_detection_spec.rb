@@ -6,6 +6,25 @@ require 'mini_magick'
 RSpec.describe EdgeDetection do
   include EdgeDetection
 
+  describe '#all methods' do
+    it 'step by step test' do
+      # Load a test image
+      image_rep = ImageRepresentation.new
+      test_image_path = File.join(__dir__, 'fixtures', 'input', 'test_image.png')
+      expect(File.exist?(test_image_path)).to be true
+      image_rep.load_image(test_image_path)
+
+      store_image(image_rep, File.join(__dir__, 'fixtures', 'output', 'loaded_image.png'))
+      dilated_image = image_rep.dilation(get_default_structuring_element_3x3)
+      store_image(dilated_image, File.join(__dir__, 'fixtures', 'output', 'dilated_image.png'))
+      eroded_image = image_rep.erosion(get_default_structuring_element_3x3)
+      store_image(eroded_image, File.join(__dir__, 'fixtures', 'output', 'eroded_image.png'))
+      edge_image = dilated_image.subtract(eroded_image)
+      store_image(edge_image, File.join(__dir__, 'fixtures', 'output', 'edge_image.png'))
+
+    end
+  end
+
   describe '#dilation_erosion_edge_detection' do
     it 'performs edge detection and matches expected output' do
       # ========================================================================

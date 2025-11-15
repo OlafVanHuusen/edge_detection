@@ -17,7 +17,8 @@ module EdgeDetection
 
   def store_image(image_rep, output_path)
     # Flatten the 2D array of [gray_value] arrays to a single byte array
-    pixel_data = image_rep.pixels.flatten.flatten.pack('C*')
+    pixels = image_rep.pixels
+    pixel_data = pixels.flatten.flatten.pack('C*')
 
     # Write raw pixel data to a temporary file
     temp_file = Tempfile.new(['raw_image', '.gray'])
