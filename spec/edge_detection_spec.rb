@@ -21,7 +21,6 @@ RSpec.describe EdgeDetection do
       store_image(eroded_image, File.join(__dir__, 'fixtures', 'output', 'eroded_image.png'))
       edge_image = dilated_image.subtract(eroded_image)
       store_image(edge_image, File.join(__dir__, 'fixtures', 'output', 'edge_image.png'))
-
     end
   end
 
@@ -40,7 +39,7 @@ RSpec.describe EdgeDetection do
       expect(File.exist?(input_image_path)).to be true
 
       # Verify expected image exists
-      #expect(File.exist?(expected_image_path)).to be true
+      # expect(File.exist?(expected_image_path)).to be true
 
       # Perform edge detection
       dilation_erosion_edge_detection(input_image_path, output_image_path)
@@ -79,8 +78,7 @@ RSpec.describe EdgeDetection do
 
       # Expect at least 95% similarity
       expect(similarity_percentage).to be >= 95.0,
-        "Output image similarity is #{similarity_percentage}%, expected at least 95%"
+                                       "Output image similarity is #{similarity_percentage}%, expected at least 95%"
     end
   end
 end
-

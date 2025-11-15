@@ -4,7 +4,6 @@ require 'spec_helper'
 require_relative '../../lib/Image/image_representation'
 
 RSpec.describe ImageRepresentation do
-
   describe 'performance tests with various image sizes' do
     let(:structuring_element) do
       [
@@ -13,7 +12,7 @@ RSpec.describe ImageRepresentation do
         [1, 1, 1]
       ]
     end
-  # Helper method to create test images of any size
+    # Helper method to create test images of any size
     def create_test_image(size, seed = 42)
       image = ImageRepresentation.new
       random = Random.new(seed)
@@ -29,15 +28,15 @@ RSpec.describe ImageRepresentation do
           scale = size / 400.0 # Scale factors based on image size
           freq1 = Math.sin(x / (20.0 * scale)) * Math.cos(y / (20.0 * scale))
           freq2 = Math.sin(x / (50.0 * scale)) * Math.cos(y / (50.0 * scale))
-          freq3 = Math.sin(x / (10.0 * scale) + y / (15.0 * scale)) * 0.5
+          freq3 = Math.sin((x / (10.0 * scale)) + (y / (15.0 * scale))) * 0.5
 
           # Multiple radial components
           center1 = size / 4.0
           center2 = size * 3.0 / 4.0
           center3 = size / 2.0
-          dist1 = Math.sqrt((x - center1)**2 + (y - center1)**2) / (size / 2.0)
-          dist2 = Math.sqrt((x - center2)**2 + (y - center2)**2) / (size * 3.0 / 8.0)
-          dist3 = Math.sqrt((x - center3)**2 + (y - center3)**2) / (size * 5.0 / 8.0)
+          dist1 = Math.sqrt(((x - center1)**2) + ((y - center1)**2)) / (size / 2.0)
+          dist2 = Math.sqrt(((x - center2)**2) + ((y - center2)**2)) / (size * 3.0 / 8.0)
+          dist3 = Math.sqrt(((x - center3)**2) + ((y - center3)**2)) / (size * 5.0 / 8.0)
 
           # Combine all components
           combined = (freq1 + freq2 + freq3 - dist1 - dist2 + dist3) / 3.0

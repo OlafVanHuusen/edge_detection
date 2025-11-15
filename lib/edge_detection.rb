@@ -5,7 +5,6 @@ require 'mini_magick'
 require 'tempfile'
 
 module EdgeDetection
-
   def dilation_erosion_edge_detection(input_image_path, output_image_path, structuring_element = nil, repeats = 0)
     structuring_element ||= get_default_structuring_element_3x3
     image_rep = create_image_representation(input_image_path)

@@ -92,7 +92,7 @@ class ImageRepresentation
     return ImageRepresentation.new(nil, []) if @pixels.nil? || other_pixels_narray.nil?
 
     # Fast approach: Create mask first to detect underflow, then subtract
-    result = @pixels - other_pixels_narray  # This will wrap for negatives
+    result = @pixels - other_pixels_narray # This will wrap for negatives
     mask = @pixels < other_pixels_narray     # Find where underflow occurred
     result[mask] = 0                         # Fix wrapped values
 
@@ -190,15 +190,15 @@ class ImageRepresentation
     return if grayscale?
 
     # Convert to grayscale using NArray for vectorized operations
-    if @pixels.ndim == 3
-      # RGB to grayscale: 0.3*R + 0.59*G + 0.11*B
-      # Use integer math: (300*R + 590*G + 110*B) / 1000
-      r = @pixels[true, true, 0]
-      g = @pixels[true, true, 1]
-      b = @pixels[true, true, 2]
+    return unless @pixels.ndim == 3
 
-      @pixels = (((300 * r) + (590 * g) + (110 * b)) / 1000).cast_to(Numo::UInt8)
-    end
+    # RGB to grayscale: 0.3*R + 0.59*G + 0.11*B
+    # Use integer math: (300*R + 590*G + 110*B) / 1000
+    r = @pixels[true, true, 0]
+    g = @pixels[true, true, 1]
+    b = @pixels[true, true, 2]
+
+    @pixels = (((300 * r) + (590 * g) + (110 * b)) / 1000).cast_to(Numo::UInt8)
   end
 
   # Helper methods to convert between Ruby arrays and NArray
