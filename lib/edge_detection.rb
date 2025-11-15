@@ -2,6 +2,7 @@
 
 require_relative 'Image/image_representation'
 require 'mini_magick'
+require 'tempfile'
 
 module EdgeDetection
 
@@ -15,10 +16,24 @@ module EdgeDetection
   private
 
   def store_image(image_rep, output_path)
-    result_image = MiniMagick::Image.create('png') do |f|
-      f.write(image_rep.pixels.flatten.pack('C*'))
+    # Flatten the 2D array of [gray_value] arrays to a single byte array
+    pixel_data = image_rep.pixels.flatten.flatten.pack('C*')
+
+    # Write raw pixel data to a temporary file
+    temp_file = Tempfile.new(['raw_image', '.gray'])
+    temp_file.binmode
+    temp_file.write(pixel_data)
+    temp_file.close
+
+    # Use ImageMagick's convert to create PNG from raw gray data
+    MiniMagick::Tool::Convert.new do |convert|
+      convert.size "#{image_rep.width}x#{image_rep.height}"
+      convert.depth 8
+      convert << "gray:#{temp_file.path}"
+      convert << output_path
     end
-    result_image.write(output_path)
+
+    temp_file.unlink
   end
 
   def dilation_erosion_substraction(image_rep, structuring_element, repeats = 0)
